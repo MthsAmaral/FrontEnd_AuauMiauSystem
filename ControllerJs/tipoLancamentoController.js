@@ -1,6 +1,6 @@
 // função para CADASTRO -> POST
 function cadTpLanc() {
-    const URL = "http://localhost:8080/apis/tipo-lanc/gravar";
+    const URL = "http://localhost:8080/apis/tipo-lancamento/gravar";
     const ftipolancamento = document.getElementById("ftipolancamento");
     const formData = new FormData(ftipolancamento);
 
@@ -19,7 +19,7 @@ function cadTpLanc() {
 // função para BUSCA -> GET
 // pega os tipos de lançamento de acordo a algum filtro
 function getTpLancFiltro(filtro) {
-    const url = "http://localhost:8080/apis/tipo-lanc/buscar/" + filtro;
+    const url = "http://localhost:8080/apis/tipo-lancamento/buscar/" + filtro;
 
     fetch(url, { method: 'GET', redirect: "follow" })
         .then((response) => {
@@ -57,7 +57,7 @@ function getTpLancFiltro(filtro) {
 // outra função para BUSCA -> GET
 // buscar algum tipo pelo seu ID
 function getTpLancId(id) {
-    const url = "http://localhost:8080/apis/tipo-lanc/buscar-id/" + id;
+    const url = "http://localhost:8080/apis/tipo-lancamento/buscar-id/" + id;
 
     fetch(url, { method: 'GET', redirect: "follow" })
         .then((response) => {
@@ -95,7 +95,7 @@ function getTpLancId(id) {
 // função para DELETAR -> DELETE
 // breve explicação: nesse exemplo é mandado por parâmetro o respectivo elemento a ser excluído
 function delTpLanc(id){
-    const URL = "http://localhost:8080/apis/tipo-lanc/excluir/" + id;
+    const URL = "http://localhost:8080/apis/tipo-lancamento/excluir/" + id;
 
     fetch(URL, {
         method: 'DELETE'
@@ -110,7 +110,7 @@ function delTpLanc(id){
 // função para ATUALIZAR -> PUT
 // nessa função o objeto JSON para ser atualizado é passado por parâmetro
 function updTpLanc(lancForm){
-    const URL = "http://localhost:8080/apis/tipo-lanc/atualizar";
+    const URL = "http://localhost:8080/apis/tipo-lancamento/atualizar";
 
     const formData = new FormData(lancForm);
 
