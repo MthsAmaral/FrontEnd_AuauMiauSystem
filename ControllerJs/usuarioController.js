@@ -39,6 +39,52 @@ function validarCampos()
   limparForm();
 }
 
+function cadUsuario() {
+    
+    var fusuario = document.getElementById("fusuario");
+    var jsontext = JSON.stringify(Object.fromEntries(new FormData(fusuario)));
+    var cod = document.getElementById("codUsuario").value;
+    if(cod) // existe, atualiza
+    {
+        const URL = "http://localhost:8080/apis/usuario/atualizar"
+        fetch(URL, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT', body: jsontext
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((json) => {
+                alert("Usuario Alterado Com Sucesso");
+                fanimal.reset();
+            })
+            .catch((error) => console.error(error))
+
+    }
+    else
+    {
+        const URL = "http://localhost:8080/apis/usuario/gravar"
+        fetch(URL, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST', body: jsontext
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((json) => {
+                alert("Usuario Cadastrado Com Sucesso");
+                fusuario.reset();
+            })
+            .catch((error) => console.error(error))
+    }
+}
+
 function buscarUsuario() {
     let filtro = document.getElementById("filtro").value
     const resultado = document.getElementById("resultado");
@@ -110,7 +156,7 @@ function buscarUsuario() {
                         <td>${json[i].bairro}</td>
                         <td>${json[i].numero}</td>
                         <td><button type="button" onclick='excluirUsuario(${json[i].codUsuario})'>Excluir</button></td>
-                        <td><button type="button" onclick='alterarUsuario(${json[i].codUsuario})'>Alterar</button></td>
+                        <td><button type="button" onclick='editarUsuario(${json[i].codUsuario})'>Alterar</button></td>
                       </tr>`;
             }
             table += "</table>";
@@ -154,70 +200,34 @@ function excluirUsuario(id)
     
 }
 
-function editarUsuario(id){
-    const URL = "http://localhost:8080/apis/usuario/atualizar";
+function buscarUsuarioPeloId(id) {
+    
+    const URL = "http://localhost:8080/apis/usuario/buscar-id/"+id;
     var fusuario = document.getElementById("fusuario");
-    var jsontext = JSON.stringify(Object.fromEntries(new FormData(fusuario)));
 
     fetch(URL, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Accept': 'application/json'
         },
-        method: 'PUT', body: jsontext
+        method: 'GET'
     })
         .then((response) => {
+            if (!response.ok) {
+                throw new Error("Erro ao buscar o usuario: " + response.status);
+            }
             return response.json();
         })
         .then((json) => {
-            alert(JSON.stringify(json));
-            fusuario.reset();
+            // Preenche o formulário com os dados do animal
+            Object.keys(json).forEach(key => {
+                let field = fusuario.elements[key];
+                if (field) {
+                    field.value = json[key];
+                }
+            });
         })
-        .catch((error) => console.error(error))
-}
-
-function cadUsuario() {
-    
-    var fusuario = document.getElementById("fusuario");
-    var jsontext = JSON.stringify(Object.fromEntries(new FormData(fusuario)));
-    var cod = document.getElementById("codUsuario").value;
-    if(cod) // existe, atualiza
-    {
-        const URL = "http://localhost:8080/apis/usuario/atualizar"
-        fetch(URL, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'PUT', body: jsontext
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((json) => {
-                alert("Usuario Alterado Com Sucesso");
-                fusuario.reset();
-            })
-            .catch((error) => console.error(error))
-
-    }
-    else
-    {
-        const URL = "http://localhost:8080/apis/usuario/gravar"
-        fetch(URL, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST', body: jsontext
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((json) => {
-                alert("Usuario Cadastrado Com Sucesso");
-                fusuario.reset();
-            })
-            .catch((error) => console.error(error))
-    }
+        .catch((error) => {
+            console.error("Erro ao buscar o usuario:", error);
+            alert("Erro ao buscar o usuario.");
+        });
 }
